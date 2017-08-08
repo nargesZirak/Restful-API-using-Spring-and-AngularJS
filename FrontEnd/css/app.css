@@ -1,0 +1,33 @@
+.menu{
+    border-bottom:2px solid black;
+    margin:0 auto;
+    margin-bottom:1em;
+    padding-bottom:10px;
+}
+.menu:before{
+    content:"[";
+}
+.menu:after{
+    content:"]"
+}
+.menu li{
+    display:inline;
+    list-style:none;
+    
+}
+.menu li:before{
+    content:"|";
+    padding-right:10px;
+}
+.menu li:nth-child(1):before{
+    content:"";
+    padding-right:0px;
+}
+.form-group{
+    margin-top:20px;
+}
+
+h2{
+    margin-bottom:1em;
+    text-decoration: underline;
+}

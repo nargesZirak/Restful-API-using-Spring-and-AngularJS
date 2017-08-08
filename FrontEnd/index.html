@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" >
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Application</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/app.css">
+    </head>
+    <body ng-app="myApp">
+        <nav class="navbar navbar-inverse" style="margin-top:30px;">
+            <div class="container-fluid" style="margin-left:30px !important;">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#/">MY COURSES</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#/all-courses">courses</a></li>
+                    <li><a href="#/edit-course/1">edit-course</a></li>
+                    <li><a href="#/add-course">add-course</a></li>
+                </ul>
+            </div>
+        </nav>
+      
+        <div ng-view></div>
+        <!--JQuery, AngularJS scripts-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.js"></script>
+        <!--MY SCRIPTS-->
+        <script>
+            angular.module('myApp',['myApp.services','myApp.controllers']).
+            config(['$routeProvider',function($routeProvider){
+                  $routeProvider.when('/',{templateUrl:'partials/all-courses.html',controller:'coursesCtrl'});
+                  $routeProvider.when('/all-courses',{templateUrl:'partials/all-courses.html',controller:'coursesCtrl'});
+                  $routeProvider.when('/edit-course/:id',{templateUrl:'partials/edit-course.html',controller:'editCtrl'});
+                  $routeProvider.when('/add-course',{templateUrl:'partials/add-course.html',controller:'addCtrl'});
+              }]);
+       </script>
+      <script>
+          var services = angular.module('myApp.services',['ngResource']);
+
+            services.factory('CoursesFactory',function($resource){
+                return $resource('http://localhost\\:8090/courses',{},{
+                    query:{method:'GET',isArray:false},
+                    create:{method:'POST'}
+                })
+            });
+          
+            services.factory('CourseFactory',function($resource){
+               return $resource('http://localhost\\:8090/courses/:id',{id:'@id'},{
+                  get:{method:'GET'},
+                  update:{method:'PUT'},
+                  delete:{method:'DELETE'}           
+               })
+            });
+          
+        </script>
+        <script>
+           var mainCtrl = angular.module('myApp.controllers',[]);
+
+           mainCtrl.controller('coursesCtrl',['$scope','CourseFactory','CoursesFactory','$location',
+               function($scope,CourseFactory,CoursesFactory,$location){
+                   
+                   CoursesFactory.query(function(data){
+                      $scope.courses= data._embedded.courses;
+                   });
+                   $scope.editCourse = function(courseId){
+                       $location.path('/edit-course/'+courseId);
+                   } 
+                   $scope.deleteCourse = function(courseId){
+                       CourseFactory.delete({id:courseId});
+                        CoursesFactory.query(function(data){
+                            $scope.courses= data._embedded.courses;
+                        });
+                        $location.path('all-courses');
+                   }
+                   
+               }]);
+            
+            mainCtrl.controller('editCtrl',['$scope','CourseFactory','CoursesFactory' ,'$routeParams','$location',
+                function($scope,CourseFactory,CoursesFactory,$routeParams,$location){
+                    $scope.course= CourseFactory.get({id:$routeParams.id});  
+                    $scope.cancel = function(){
+                        $location.path('all-courses');
+                    };
+                    $scope.update = function(){
+                        CourseFactory.update($scope.course);
+                        CoursesFactory.query(function(data){
+                            $scope.courses= data._embedded.courses;
+                        });
+                        $location.path('all-courses');
+                    }
+                    
+                }]);
+            
+            mainCtrl.controller('addCtrl',['$scope','CoursesFactory','$location',
+                 function($scope,CoursesFactory,$location){
+                     $scope.createNewCustomer = function(){
+                         CoursesFactory.create($scope.course);
+                         $location.path('/all-courses');
+                     };
+                     
+                 }]);
+            </script>
+    </body>
+</html>

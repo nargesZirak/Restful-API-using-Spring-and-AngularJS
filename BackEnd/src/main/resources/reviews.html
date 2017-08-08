@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rate Your Courses</title>
+    <link rel="stylesheet" href="/css/page_template.css">
+</head>
+<body ng-app="CourseReviewApp" ng-controller="mainCtrl">
+<h1>
+    SEE YOUR REVIEWS
+</h1>
+
+<table>
+
+
+    <tr ng-repeat="review in reviews">
+        <td>{{ review.rating }}</td>
+        <td>{{ review.description}}</td>
+    </tr>
+
+</table>
+
+<!-- Load AngularJS -->
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="vendor/angular.js" type="text/javascript"></script>
+<script src="js/app.js" type="text/javascript"></script>
+<script src="js/controllers/main.js" type="text/javascript"></script>
+
+</body>
+</html>

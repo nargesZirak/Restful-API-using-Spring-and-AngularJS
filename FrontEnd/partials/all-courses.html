@@ -1,0 +1,22 @@
+<div class="container">
+    <h2>List of Courses</h2>
+  
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Course Title</th>
+                <th>Course URL</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+            <tr  ng-repeat="course in courses">
+                <th>{{course.title}}</th>
+                <th>{{course.url}}</th>
+                <th><button type="button" ng-click=editCourse(course.id) class="btn btn-primary">Edit</button></th>
+                <th><button type="button" ng-click=deleteCourse(course.id) class="btn btn-danger">Delete</button></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table> 
+</div>
